@@ -14,4 +14,14 @@ create(){
 update(){
     this.background.tilePositionY -= 0.5;
 }
+
+movePlayerManager() {
+    this.player.setVelocity(0);
+
+    if(this.cursorKeys.left.isDown){
+        this.player.setVelocityX(-gameSettings.playerSpeed);
+    } else if(this.cursorKeys.right.isDown) {
+        this.player.setVelocityX(gameSettings.playerSpeed);
+    }
+}
 }
