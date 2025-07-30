@@ -21,9 +21,9 @@ moveShipManager() {
     this.ship.setVelocity(0);
 
     if(this.cursorKeys.left.isDown){
-        this.ship.setVelocityX(-gameSettings.shipSpeed);
+        this.ship.setVelocityX(-gameSettings.playerSpeed);
     } else if(this.cursorKeys.right.isDown) {
-        this.ship.setVelocityX(gameSettings.shipSpeed);
+        this.ship.setVelocityX(gameSettings.playerSpeed);
     }
 }
 }
