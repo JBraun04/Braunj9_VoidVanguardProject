@@ -9,6 +9,8 @@ create(){
 
     this.ship = this.add.sprite(config.width/2, config.height/2 + 200, "ship");
     this.ship.play("ship_animation");
+
+    this.cursorKeys = this.input.keyboard.createCursorKeys();
     }
 
 update(){
