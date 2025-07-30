@@ -17,13 +17,13 @@ update(){
     this.background.tilePositionY -= 0.5;
 }
 
-movePlayerManager() {
-    this.player.setVelocity(0);
+moveShipManager() {
+    this.ship.setVelocity(0);
 
     if(this.cursorKeys.left.isDown){
-        this.player.setVelocityX(-gameSettings.playerSpeed);
+        this.ship.setVelocityX(-gameSettings.shipSpeed);
     } else if(this.cursorKeys.right.isDown) {
-        this.player.setVelocityX(gameSettings.playerSpeed);
+        this.ship.setVelocityX(gameSettings.shipSpeed);
     }
 }
 }
