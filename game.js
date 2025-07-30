@@ -14,3 +14,5 @@ var config = {
 window.onload = function() {
     var game = new Phaser.Game(config);
 }
+
+//testing
