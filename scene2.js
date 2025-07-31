@@ -14,9 +14,33 @@ create(){
     this.asteroidMedium = this.physics.add.image(250, 100, "asteroid").setScale(.4);
     this.asteroidLarge = this.physics.add.image(420, 100, "asteroid").setScale(.75);
     
+    this.cursorKeys = this.input.keyboard.createCursorKeys();
     }
 
 update(){
     this.background.tilePositionY -= 0.5;
+}
+
+moveAsteroid(asteroid, speed) {
+    asteroid.y += speed;
+    if (asteroid.y > config.height) {
+        this.resetAsteroidPos(asteroid);
+    }
+}
+
+resetAsteroidPos(asteroid) {
+    asteroid.y = 0;
+    var randomX = Phaser.Math.Between(0, config.width);
+    asteroid.x = randomX;
+}
+
+moveShipManager() {
+    this.ship.setVelocity(0);
+
+    if(this.cursorKeys.left.isDown){
+        this.ship.setVelocityX(-gameSettings.playerSpeed);
+    } else if(this.cursorKeys.right.isDown) {
+        this.ship.setVelocityX(gameSettings.playerSpeed);
+    }
 }
 }
