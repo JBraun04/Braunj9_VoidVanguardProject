@@ -7,7 +7,7 @@ create(){
     this.background = this.add.tileSprite(0,0, config.width, config.height, "background");
     this.background.setOrigin(0,0);
 
-    this.ship = this.add.sprite(config.width/2, config.height/2 + 200, "ship");
+    this.ship = this.physics.add.sprite(config.width/2, config.height/2 + 200, "ship");
     this.ship.play("ship_animation");
 
     this.asteroidSmall = this.physics.add.image(100, 100, "asteroid").setScale(.2);
@@ -19,6 +19,11 @@ create(){
 
 update(){
     this.background.tilePositionY -= 0.5;
+    this.moveShipManager();
+
+    this.moveAsteroid(this.asteroidSmall, 3.9);
+    this.moveAsteroid(this.asteroidMedium, 2.7);
+    this.moveAsteroid(this.asteroidLarge, 1.9);
 }
 
 moveAsteroid(asteroid, speed) {
@@ -35,12 +40,12 @@ resetAsteroidPos(asteroid) {
 }
 
 moveShipManager() {
-    this.ship.setVelocity(0);
+    this.ship.setVelocityX(0);
 
     if(this.cursorKeys.left.isDown){
-        this.ship.setVelocityX(-gameSettings.playerSpeed);
+        this.ship.setVelocityX(-310);
     } else if(this.cursorKeys.right.isDown) {
-        this.ship.setVelocityX(gameSettings.playerSpeed);
+        this.ship.setVelocityX(310);
     }
 }
 }
