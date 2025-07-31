@@ -9,6 +9,11 @@ create(){
 
     this.ship = this.add.sprite(config.width/2, config.height/2 + 200, "ship");
     this.ship.play("ship_animation");
+
+    this.asteroidSmall = this.physics.add.image(100, 100, "asteroid").setScale(.2);
+    this.asteroidMedium = this.physics.add.image(250, 100, "asteroid").setScale(.4);
+    this.asteroidLarge = this.physics.add.image(420, 100, "asteroid").setScale(.75);
+    
     }
 
 update(){
