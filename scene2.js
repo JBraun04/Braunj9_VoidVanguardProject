@@ -17,6 +17,19 @@ update(){
     this.background.tilePositionY -= 0.5;
 }
 
+moveAsteroid(asteroid, speed) {
+    asteroid.y += speed;
+    if (asteroid.y > config.height) {
+        this.resetAsteroidPos(asteroid);
+    }
+}
+
+resetAsteroidPos(asteroid) {
+    asteroid.y = 0;
+    var randomX = Phaser.Math.Between(0, config.width);
+    asteroid.x = randomX;
+}
+
 moveShipManager() {
     this.ship.setVelocity(0);
 
