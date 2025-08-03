@@ -89,7 +89,7 @@ class scene2 extends Phaser.Scene {
         if (bullet) {
             bullet.enableBody(true, this.ship.x, this.ship.y - 20, true, true);
             bullet.setVelocityY(-400);
-            bullet.setScale(0.5);
+            bullet.setScale(0.1);
         }
     }
 
