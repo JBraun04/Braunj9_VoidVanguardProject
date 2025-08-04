@@ -38,16 +38,12 @@ class scene2 extends Phaser.Scene {
         
         this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '20px', fill: '#fff' });
 
-        this.asteroidSpawnTimer = this.time.addEvent({
-            delay: 1000,
-            callback: this.spawnAsteroid,
-            callbackScope: this,
-            loop: true
-        });
+        this.spawnAsteroid();
         
         this.physics.add.collider(this.bullets, this.asteroids, this.hitAsteroid, null, this);
         this.physics.add.collider(this.ship, this.asteroids, this.shipHit, null, this);
         this.physics.add.collider(this.ship, this.ufo, this.shipHit, null, this);
+
     }
 
     update(time){
@@ -56,10 +52,8 @@ class scene2 extends Phaser.Scene {
         this.moveUFO(this.ufo, .2);
 
         this.asteroids.children.each(asteroid => {
-            if (asteroid.y > config.height) {
-                this.resetAsteroidPos(asteroid);
-            }
-        });
+            this.moveAsteroid(asteroid); },
+                this);
         
         this.bullets.children.each(bullet => {
             if (bullet.y < 0) {
@@ -115,25 +109,40 @@ class scene2 extends Phaser.Scene {
         
         bullet.destroy();
         asteroid.destroy();
+
+        this.createAsteroid(asteroid.scaleX, asteroid.speed);
         
         this.score += 10;
         this.scoreText.setText('Score: ' + this.score);
     }
     
     spawnAsteroid() {
-        let x = Phaser.Math.Between(0, config.width);
-        let y = -50;
-        let asteroid = this.asteroids.create(x, y, "asteroid");
-        asteroid.setVelocityY(Phaser.Math.Between(50, 200));
-        asteroid.setAngularVelocity(Phaser.Math.Between(-100, 100));
-        asteroid.setCollideWorldBounds(false);
-        asteroid.setOrigin(0.5);
+        this.createAsteroid(0.2, 3.2);
+        this.createAsteroid(0.5, 2.1);
+        this.createAsteroid(0.9, 1.1);
     }
 
-    moveAsteroid(asteroid, speed) {
+    createAsteroid(scale, speed){
+        const x = Phaser.Math.Between(50, config.width - 50);
+        const y = - 50;
+
+        const asteroid = this.asteroids.create(x,y, "asteroid");
+        asteroid.setScale(scale);
+        asteroid.setOrigin(0.5);
+        asteroid.setAngularVelocity(Phaser.Math.Between(-40, 40));
+        asteroid.speed = speed;
+    }
+
+    moveAsteroid(asteroid) {
+        asteroid.y += asteroid.speed;
+    if (asteroid.y > config.height) {
+        this.resetAsteroidPos(asteroid);
+        }
     }
 
     resetAsteroidPos(asteroid) {
+        asteroid.y = -50;
+        asteroid.x = Phaser.Math.Between(50, config.width - 50);
     }
 
     moveUFO(ufo, speed) {
