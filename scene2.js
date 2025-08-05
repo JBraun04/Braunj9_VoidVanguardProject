@@ -4,7 +4,7 @@ class scene2 extends Phaser.Scene {
         this.score = 0;
         this.lives = 3;
         this.bulletDelay = 200;
-        this.lastBulletTime = 0;
+        this.lastBulletTime = .5;
     }
 
     create(){
@@ -18,7 +18,7 @@ class scene2 extends Phaser.Scene {
 
         this.cursorKeys = this.input.keyboard.createCursorKeys();
         this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        
+
         this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
@@ -28,33 +28,31 @@ class scene2 extends Phaser.Scene {
         });
 
         this.asteroids = this.physics.add.group();
-        this.ufo = this.physics.add.sprite(200, 0, "ufo").setScale(4);
-        this.ufo.play("ufo_animation");
-        this.ufo.body.setAllowGravity(false);
+        this.ufos = this.physics.add.group();
 
         this.heart1 = this.add.image(410, 25, "heart").setScale(.1);
         this.heart2 = this.add.image(440, 25, "heart").setScale(.1);
         this.heart3 = this.add.image(470, 25, "heart").setScale(.1);
-        
+
         this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '20px', fill: '#fff' });
 
         this.spawnAsteroid();
-        
+        this.spawnUFOs();
+
         this.physics.add.collider(this.bullets, this.asteroids, this.hitAsteroid, null, this);
         this.physics.add.collider(this.ship, this.asteroids, this.shipHit, null, this);
-        this.physics.add.collider(this.ship, this.ufo, this.shipHit, null, this);
-
+        this.physics.add.collider(this.ship, this.ufos, this.shipHit, null, this);
     }
 
     update(time){
         this.background.tilePositionY -= 0.5;
         this.moveShipManager(time);
-        this.moveUFO(this.ufo, .2);
+        this.moveUFOs();
 
         this.asteroids.children.each(asteroid => {
-            this.moveAsteroid(asteroid); },
-                this);
-        
+            this.moveAsteroid(asteroid);
+        }, this);
+
         this.bullets.children.each(bullet => {
             if (bullet.y < 0) {
                 bullet.disableBody(true, true);
@@ -71,13 +69,13 @@ class scene2 extends Phaser.Scene {
         } else if(this.cursorKeys.right.isDown || this.keyD.isDown) {
             this.ship.body.setVelocityX(310);
         }
-        
+
         if (this.spacebar.isDown && time > this.lastBulletTime) {
             this.fireBullet();
             this.lastBulletTime = time + this.bulletDelay;
         }
     }
-    
+
     fireBullet() {
         let bullet = this.bullets.get();
         if (bullet) {
@@ -102,20 +100,20 @@ class scene2 extends Phaser.Scene {
             console.log("Game Over!");
         }
     }
-    
+
     hitAsteroid(bullet, asteroid) {
         let explosion = this.add.sprite(asteroid.x, asteroid.y, "explosion");
         explosion.play("explosion_animation");
-        
+
         bullet.destroy();
         asteroid.destroy();
 
         this.createAsteroid(asteroid.scaleX, asteroid.speed);
-        
+
         this.score += 10;
         this.scoreText.setText('Score: ' + this.score);
     }
-    
+
     spawnAsteroid() {
         this.createAsteroid(0.2, 3.2);
         this.createAsteroid(0.5, 2.1);
@@ -124,9 +122,9 @@ class scene2 extends Phaser.Scene {
 
     createAsteroid(scale, speed){
         const x = Phaser.Math.Between(50, config.width - 50);
-        const y = - 50;
+        const y = -50;
 
-        const asteroid = this.asteroids.create(x,y, "asteroid");
+        const asteroid = this.asteroids.create(x, y, "asteroid");
         asteroid.setScale(scale);
         asteroid.setOrigin(0.5);
         asteroid.setAngularVelocity(Phaser.Math.Between(-40, 40));
@@ -135,8 +133,8 @@ class scene2 extends Phaser.Scene {
 
     moveAsteroid(asteroid) {
         asteroid.y += asteroid.speed;
-    if (asteroid.y > config.height) {
-        this.resetAsteroidPos(asteroid);
+        if (asteroid.y > config.height) {
+            this.resetAsteroidPos(asteroid);
         }
     }
 
@@ -145,16 +143,34 @@ class scene2 extends Phaser.Scene {
         asteroid.x = Phaser.Math.Between(50, config.width - 50);
     }
 
-    moveUFO(ufo, speed) {
-        ufo.y += speed;
-        if (ufo.y > config.height) {
-            this.resetUFOPos(ufo);
-        }
+    spawnUFOs() {
+        this.createUFO(0.8, 1.2);  // Adjusted size and speed to be more visible
+        this.createUFO(1.0, 1.0);
+    }
+
+    createUFO(scale, speed) {
+        const x = Phaser.Math.Between(50, config.width - 50);
+        const y = Phaser.Math.Between(-100, -50);
+
+        const ufo = this.ufos.create(x, y, "ufo");
+        ufo.setScale(scale);
+        ufo.setOrigin(0.5);
+        ufo.play("ufo_animation");
+        ufo.body.setAllowGravity(false);
+        ufo.speed = speed;
+    }
+
+    moveUFOs() {
+        this.ufos.children.each(ufo => {
+            ufo.y += ufo.speed;
+            if (ufo.y > config.height) {
+                this.resetUFOPos(ufo);
+            }
+        });
     }
 
     resetUFOPos(ufo) {
         ufo.y = 0;
-        var randomX = Phaser.Math.Between(0, config.width);
-        ufo.x = randomX;
+        ufo.x = Phaser.Math.Between(50, config.width - 50);
     }
 }
