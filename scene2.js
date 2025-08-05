@@ -2,6 +2,7 @@ class scene2 extends Phaser.Scene {
     constructor(){
         super("playGame");
         this.score = 0;
+        this.healScore = 0;
         this.lives = 3;
         this.bulletDelay = 200;
         this.lastBulletTime = .5;
@@ -93,11 +94,27 @@ class scene2 extends Phaser.Scene {
     }
 
     updateHearts() {
-        if (this.lives < 3) this.heart3.setVisible(false);
-        if (this.lives < 2) this.heart2.setVisible(false);
-        if (this.lives < 1) this.heart1.setVisible(false);
+        this.heart1.setVisible(this.lives >= 1);
+        this.heart2.setVisible(this.lives >= 2);
+        this.heart3.setVisible(this.lives >= 3);
+
         if (this.lives === 0) {
             console.log("Game Over!");
+        }
+    }
+
+    restoreHealth() {
+        this.lives = 3;
+        this.heart1.setVisible(true);
+        this.heart2.setVisible(true);
+        this.heart3.setVisible(true);
+    }
+
+    checkHeal() {
+        if (this.healScore >= 1000) {
+            this.restoreHealth();
+            this.healScore = 0;
+            console.log("Health restored at score:", this.score);
         }
     }
 
@@ -111,6 +128,9 @@ class scene2 extends Phaser.Scene {
         this.createAsteroid(asteroid.scaleX, asteroid.speed);
 
         this.score += 10;
+        this.healScore += 10;
+        this.checkHeal();
+
         this.scoreText.setText('Score: ' + this.score);
     }
 
@@ -144,7 +164,7 @@ class scene2 extends Phaser.Scene {
     }
 
     spawnUFOs() {
-        this.createUFO(0.8, 1.2);  // Adjusted size and speed to be more visible
+        this.createUFO(0.8, 1.2);
         this.createUFO(1.0, 1.0);
     }
 
